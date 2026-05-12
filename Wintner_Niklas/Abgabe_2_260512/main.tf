@@ -17,7 +17,7 @@ variable "exoscale_secret" {}
 
 # 1. Sicherheitsgruppe (Firewall)
 resource "exoscale_security_group" "vica_sg" {
-  name = "vica-sg-wintner-v5"
+  name = "vica-sg-wintner-v8"
 }
 
 # 2. Regel für Port 80 (HTTP)
@@ -36,7 +36,7 @@ resource "exoscale_compute_instance" "my_vm" {
   zone               = "at-vie-1"
   type               = "standard.micro"
   # Die aktuelle ID für Ubuntu 26.04 LTS in Wien
-  template_id        = "69472391-9231-4a2b-9321-4f1e912c98d1"
+  template_id        = "69677353-8167-4638-89c0-3f4439c36203"
   disk_size          = 10
   security_group_ids = [exoscale_security_group.vica_sg.id]
   user_data          = file("cloud-init.yaml")
