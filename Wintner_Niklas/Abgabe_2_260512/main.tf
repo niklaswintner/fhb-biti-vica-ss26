@@ -35,13 +35,13 @@ resource "exoscale_compute_instance" "my_vm" {
   name               = "vica-vm-wintner"
   zone               = "at-vie-1"
   type               = "standard.micro"
-  template_id        = "4004943f-b649-410a-8656-7476f7c11f4d" # Ubuntu 22.04
+  template_id        = "65766860-937b-4022-959c-6a0e698885b5" # Ubuntu 22.04
   disk_size          = 10
   security_group_ids = [exoscale_security_group.vica_sg.id]
   user_data          = file("cloud-init.yaml")
 }
 
-# Zeigt uns am Ende die IP-Adresse an
+# Zeigt am Ende die IP-Adresse an
 output "vm_public_ip" {
   value = exoscale_compute_instance.my_vm.public_ip_address
 }
