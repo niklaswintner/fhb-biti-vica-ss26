@@ -22,7 +22,7 @@ data "exoscale_template" "ubuntu" {
 
 # 1. Sicherheitsgruppe
 resource "exoscale_security_group" "vica_sg" {
-  name = "vica-sg-wintner-v9"
+  name = "vica-sg-wintner"
 }
 
 # 2. Regel für Port 80
