@@ -1,0 +1,40 @@
+#cloud-config
+package_update: true
+packages:
+  - python3-flask
+  - python3-psutil
+
+write_files:
+  - path: /opt/app.py
+    content: |
+      from flask import Flask, jsonify
+      import platform, socket, psutil
+
+      app = Flask(__name__)
+
+      def get_sys_info():
+          return {
+              "ip": socket.gethostbyname(socket.gethostname()),
+              "kernel": platform.release(),
+              "os": platform.system(),
+              "cpu_count": psutil.cpu_count(),
+              "memory": f"{round(psutil.virtual_memory().total / (1024**3), 2)} GB"
+          }
+
+      @app.route('/')
+      def home():
+          data = get_sys_info()
+          html = "<h1>Technical Details (Wintner)</h1><ul>"
+          for k, v in data.items():
+              html += f"<li><b>{k}:</b> {v}</li>"
+          return html + "</ul><p><a href='/json'>View as JSON API</a></p>"
+
+      @app.route('/json')
+      def json_api():
+          return jsonify(get_sys_info())
+
+      if __name__ == '__main__':
+          app.run(host='0.0.0.0', port=80)
+
+runcmd:
+  - python3 /opt/app.py &
