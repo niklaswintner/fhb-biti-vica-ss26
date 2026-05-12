@@ -16,7 +16,7 @@ variable "exoscale_key" {}
 variable "exoscale_secret" {}
 
 # 1. Sicherheitsgruppe (Firewall)
-resource "exoscale_security_group" "vica_sg" {
+resource "exoscale_security_group-v5" "vica_sg" {
   name = "vica-sg-wintner-v4"
 }
 
@@ -35,7 +35,7 @@ resource "exoscale_compute_instance" "my_vm" {
   name               = "vica-vm-wintner"
   zone               = "at-vie-1"
   type               = "standard.micro"
-  template_id        = "5a3c6130-9430-4e2a-9321-4f1e912c98d1" # Ubuntu 26.04 LTS
+  template_id        = "69472391-9231-4a2b-9321-4f1e912c98d1" # Ubuntu 26.04 LTS
   disk_size          = 10
   security_group_ids = [exoscale_security_group.vica_sg.id]
   user_data          = file("cloud-init.yaml")
