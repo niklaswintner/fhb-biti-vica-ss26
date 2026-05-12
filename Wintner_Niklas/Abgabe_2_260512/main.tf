@@ -11,16 +11,21 @@ provider "exoscale" {
   secret = var.exoscale_secret
 }
 
-# Diese Variablen ziehen sich die Daten aus den GitHub Secrets
 variable "exoscale_key" {}
 variable "exoscale_secret" {}
 
-# 1. Sicherheitsgruppe (Firewall)
-resource "exoscale_security_group" "vica_sg" {
-  name = "vica-sg-wintner-v8"
+# Dynamische Suche: Terraform fragt Exoscale nach dem Template
+data "exoscale_template" "ubuntu" {
+  zone = "at-vie-1"
+  name = "Linux Ubuntu 24.04 LTS 64-bit"
 }
 
-# 2. Regel für Port 80 (HTTP)
+# 1. Sicherheitsgruppe
+resource "exoscale_security_group" "vica_sg" {
+  name = "vica-sg-wintner-v9"
+}
+
+# 2. Regel für Port 80
 resource "exoscale_security_group_rule" "http" {
   security_group_id = exoscale_security_group.vica_sg.id
   type              = "INGRESS"
@@ -30,19 +35,18 @@ resource "exoscale_security_group_rule" "http" {
   end_port          = 80
 }
 
-# 3. Die VM (Compute Instance)
+# 3. Die VM
 resource "exoscale_compute_instance" "my_vm" {
   name               = "vica-vm-wintner"
   zone               = "at-vie-1"
   type               = "standard.micro"
-  # Die aktuelle ID für Ubuntu 26.04 LTS in Wien
-  template_id        = "69677353-8167-4638-89c0-3f4439c36203"
+  # Hier wird das Ergebnis der Suche oben genutzt
+  template_id        = data.exoscale_template.ubuntu.id
   disk_size          = 10
   security_group_ids = [exoscale_security_group.vica_sg.id]
   user_data          = file("cloud-init.yaml")
 }
 
-# Zeigt am Ende die IP-Adresse an
 output "vm_public_ip" {
   value = exoscale_compute_instance.my_vm.public_ip_address
 }
